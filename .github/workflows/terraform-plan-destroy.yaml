@@ -43,7 +43,8 @@ jobs:
   steps2:
     name: "Terraform Destroy"
     runs-on: ubuntu-latest
-    environment: Prod
+    environment: 
+      name: Prod
     needs: terraform
     env:
       AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
