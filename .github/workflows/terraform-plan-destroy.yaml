@@ -7,9 +7,72 @@ on:
   workflow_dispatch:
 
 jobs:
-  terraform:
-    name: "Terraform"
+  plan:
+    name: "Terraform Plan"
     runs-on: ubuntu-latest
+    env:
+      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      AWS_REGION: 'us-east-1'
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v1
+
+      - name: Terraform init
+        id: init
+        run: terraform init
+
+      - name: Terraform Plan
+        id: plan
+        if: github.event_name == 'push'
+        run: terraform plan
+
+  apply:
+    name: "Terraform Apply"
+    runs-on: ubuntu-latest
+    environment: 
+      name: Prod
+    needs: plan
+    env:
+      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      AWS_REGION: 'us-east-1'
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v1
+
+      - name: Terraform init
+        id: init
+        run: terraform init
+
+      - name: Terraform Plan
+        id: plan
+        if: github.event_name == 'push'
+        run: terraform plan
+        continue-on-error: true
+
+      - name: Terraform Plan status
+        if: steps.plan.outcome == 'failure'
+        run: exit 1
+
+      - name: Terraform Apply
+        if: github.event_name == 'push'
+        run: terraform apply -auto-approve
+
+  plan_destroy:
+    name: "Terraform plan destroy"
+    runs-on: ubuntu-latest
+    environment: 
+      name: Prod
+    needs: apply
     env:
       AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
       AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
@@ -40,11 +103,12 @@ jobs:
         if: github.event_name == 'push'
         run: terraform plan -destroy
 
-  steps2:
+  destroy:
     name: "Terraform Destroy"
     runs-on: ubuntu-latest
-    environment: Prod
-    needs: terraform
+    environment: 
+      name: Prod
+    needs: plan_destroy
     env:
       AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
       AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
@@ -52,10 +116,6 @@ jobs:
     
 
     steps:
-      # - uses: trstringer/manual-approval@v1
-      #   with:
-      #     secret: ${{ github.TOKEN }}
-      #     approvers: ndomi
 
       - name: Checkout
         uses: actions/checkout@v2
@@ -80,4 +140,3 @@ jobs:
       - name: Terraform Plan Destroy
         if: github.event_name == 'push'
         run: terraform destroy --auto-approve
-      
