@@ -1,9 +1,9 @@
-name: "Terraform Plan Destroy"
+name: "Terraform"
 
 on:
   push:
     branches:
-      - plan_destroy
+      - master
   workflow_dispatch:
 
 jobs:
