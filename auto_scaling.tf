@@ -46,7 +46,7 @@ resource "aws_appautoscaling_policy" "down" {
   depends_on = [aws_appautoscaling_target.target]
 }
 
-resource "aws_cloudwatch_metric_alarm" "service_cpu_high_1" {
+resource "aws_cloudwatch_metric_alarm" "service_cpu_high" {
   alarm_name          = "cpu_utilization_cpu_high"
   comparison_operator = "GreaterThanOrEqualToThreshold"
   evaluation_periods  = "2"
@@ -64,41 +64,6 @@ resource "aws_cloudwatch_metric_alarm" "service_cpu_high_1" {
   alarm_actions = [aws_appautoscaling_policy.up.arn]
 }
 
-resource "aws_cloudwatch_metric_alarm" "service_cpu_high_2" {
-  alarm_name          = "cpu_utilization_cpu_high"
-  comparison_operator = "GreaterThanOrEqualToThreshold"
-  evaluation_periods  = "2"
-  metric_name         = "CPUUtilization"
-  namespace           = "AWS/ECS"
-  statistic           = "Average"
-  threshold           = "75"
-  period              = "60"
-
-  dimensions = {
-    ClusterName = aws_ecs_cluster.ecs_cluster.name
-    ServiceName = aws_ecs_service.ecs_service.name
-  }
-
-  alarm_actions = [aws_appautoscaling_policy.up.arn]
-}
-
-resource "aws_cloudwatch_metric_alarm" "service_cpu_high_3" {
-  alarm_name          = "cpu_utilization_cpu_high"
-  comparison_operator = "GreaterThanOrEqualToThreshold"
-  evaluation_periods  = "2"
-  metric_name         = "CPUUtilization"
-  namespace           = "AWS/ECS"
-  statistic           = "Average"
-  threshold           = "85"
-  period              = "60"
-
-  dimensions = {
-    ClusterName = aws_ecs_cluster.ecs_cluster.name
-    ServiceName = aws_ecs_service.ecs_service.name
-  }
-
-  alarm_actions = [aws_appautoscaling_policy.up.arn]
-}
 
 resource "aws_cloudwatch_metric_alarm" "service_cpu_low" {
   alarm_name          = "cpu_utilization_cpu_low"
