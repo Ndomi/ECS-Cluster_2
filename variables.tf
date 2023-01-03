@@ -16,7 +16,7 @@ variable "availability_zones_count" {
 
 variable "app_image" {
   description = "Docker image to run in the ECS cluster"
-  default     = "ndomi/flask_app_app"
+  default     = "ndomi/flask-emp_app"
 }
 
 variable "app_port" {
