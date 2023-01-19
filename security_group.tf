@@ -10,6 +10,13 @@ resource "aws_security_group" "lb" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 
+  ingress {
+    protocol = "tcp"
+    from_port = 80
+    to_port = 80
+    cidr_blocks = [ "0.0.0.0/0" ]
+  }
+
   egress {
     protocol    = "-1"
     from_port   = 0
@@ -28,6 +35,13 @@ resource "aws_security_group" "ecs_tasks" {
     from_port       = var.app_port
     to_port         = var.app_port
     security_groups = [aws_security_group.lb.id]
+  }
+
+  ingress {
+    protocol = "tcp"
+    from_port = 80
+    to_port = 80
+    cidr_blocks = [ "0.0.0.0/0" ]
   }
 
   egress {
