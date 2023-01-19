@@ -6,7 +6,7 @@ resource "aws_alb" "ecs_alb" {
 
 resource "aws_alb_target_group" "app" {
   name        = "target-group"
-  port        = 443
+  port        = 80
   protocol    = "HTTPS"
   vpc_id      = aws_vpc.ecs-vpc.id
   target_type = "ip"
@@ -29,13 +29,32 @@ variable "certificate_arn" {
 }
 
 resource "aws_alb_listener" "front_end" {
-  load_balancer_arn = aws_alb.ecs_alb.id
-  port              = var.app_port
-  protocol          = "HTTPS"
-  certificate_arn   = var.certificate_arn
+  load_balancer_arn = aws_alb.ecs_alb.arn
+  port              = 80
+  protocol          = "HTTP"
 
   default_action {
-    target_group_arn = aws_alb_target_group.app.id
-    type             = "forward"
+    type             = "redirect"
+
+    redirect {
+      port = 443
+      protocol = "HTTPS"
+      status_code = "HTTP_301"
+    }
+  }
+
+  resource "aws_alb_listener" "listener_https" {
+    load_balancer_arn = aws_lb.my_lb.id
+    port              = 443
+    protocol          = "HTTPS"
+
+    ssl_policy = "ELBSecurityPolicy-2016-08"
+
+    certificate_arn = var.certificate_arn
+
+    default_action {
+      type             = "forward"
+      target_group_arn = aws_alb_target_group.app.arn
+    }
   }
 }
