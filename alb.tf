@@ -30,31 +30,12 @@ variable "certificate_arn" {
 
 resource "aws_alb_listener" "front_end" {
   load_balancer_arn = aws_alb.ecs_alb.id
-  port              = 80
-  protocol          = "HTTP"
+  port              = var.app_port
+  protocol          = "HTTPS"
+  certificate_arn   = var.certificate_arn
 
   default_action {
-    type             = "redirect"
-
-    redirect {
-      port = 443
-      protocol = "HTTPS"
-      status_code = "HTTP_301"
-    }
+    target_group_arn = aws_alb_target_group.app.id
+    type             = "forward"
   }
-}  
-
-# resource "aws_alb_listener" "listener_https" {
-#   load_balancer_arn = aws_alb.ecs_alb.arn
-#   port              = 443
-#   protocol          = "HTTPS"
-
-#   ssl_policy = "ELBSecurityPolicy-2016-08"
-
-#   certificate_arn = var.certificate_arn
-
-#   default_action {
-#     type             = "forward"
-#     target_group_arn = aws_alb_target_group.app.arn
-#   }
-# }
+}
