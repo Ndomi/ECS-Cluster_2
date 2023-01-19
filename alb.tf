@@ -44,17 +44,17 @@ resource "aws_alb_listener" "front_end" {
   }
 }  
 
-resource "aws_alb_listener" "listener_https" {
-  load_balancer_arn = aws_alb.ecs_alb.arn
-  port              = 443
-  protocol          = "HTTPS"
+# resource "aws_alb_listener" "listener_https" {
+#   load_balancer_arn = aws_alb.ecs_alb.arn
+#   port              = 443
+#   protocol          = "HTTPS"
 
-  ssl_policy = "ELBSecurityPolicy-2016-08"
+#   ssl_policy = "ELBSecurityPolicy-2016-08"
 
-  certificate_arn = var.certificate_arn
+#   certificate_arn = var.certificate_arn
 
-  default_action {
-    type             = "forward"
-    target_group_arn = aws_alb_target_group.app.arn
-  }
-}
+#   default_action {
+#     type             = "forward"
+#     target_group_arn = aws_alb_target_group.app.arn
+#   }
+# }
