@@ -7,7 +7,7 @@ resource "aws_alb" "ecs_alb" {
 resource "aws_alb_target_group" "app" {
   name        = "target-group"
   port        = 443
-  protocol    = "HTTP"
+  protocol    = "HTTPS"
   vpc_id      = aws_vpc.ecs-vpc.id
   target_type = "ip"
 
