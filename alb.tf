@@ -7,7 +7,7 @@ resource "aws_alb" "ecs_alb" {
 resource "aws_alb_target_group" "app" {
   name        = "target-group"
   port        = 80
-  protocol    = "HTTPS"
+  protocol    = "HTTP"
   vpc_id      = aws_vpc.ecs-vpc.id
   target_type = "ip"
 
@@ -29,7 +29,7 @@ variable "certificate_arn" {
 }
 
 resource "aws_alb_listener" "front_end" {
-  load_balancer_arn = aws_alb.ecs_alb.arn
+  load_balancer_arn = aws_alb.ecs_alb.id
   port              = 80
   protocol          = "HTTP"
 
