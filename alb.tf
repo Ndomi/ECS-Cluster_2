@@ -22,17 +22,17 @@ resource "aws_alb_target_group" "app" {
   }
 }
 
-variable "certificate_arn" {
-  description = "ALB Certificate"
-  type = string
-  default = "arn:aws:acm:us-east-1:225908212644:certificate/53804177-a443-46ab-a03f-5ba850563fbb"
-}
+# variable "certificate_arn" {
+#   description = "ALB Certificate"
+#   type = string
+#   default = "arn:aws:acm:us-east-1:225908212644:certificate/53804177-a443-46ab-a03f-5ba850563fbb"
+# }
 
 resource "aws_alb_listener" "front_end" {
   load_balancer_arn = aws_alb.ecs_alb.id
   port              = var.app_port
-  protocol          = "HTTPS"
-  certificate_arn   = var.certificate_arn
+  protocol          = "HTTP"
+#   certificate_arn   = var.certificate_arn
 
   default_action {
     target_group_arn = aws_alb_target_group.app.id
