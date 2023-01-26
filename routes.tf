@@ -12,6 +12,10 @@ resource "aws_route_table" "private" {
     cidr_block     = "0.0.0.0/0"
     nat_gateway_id = element(aws_nat_gateway.nat_gw.*.id, count.index)
   }
+
+  tags = {
+    "Name" = "Private_RT"
+  }
 }
 
 resource "aws_route_table_association" "private" {

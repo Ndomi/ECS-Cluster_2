@@ -4,4 +4,8 @@ resource "aws_eip" "EIP" {
   depends_on = [
     aws_internet_gateway.igw
   ]
+
+  tags = {
+    "Name" = "EIP"
+  }
 }

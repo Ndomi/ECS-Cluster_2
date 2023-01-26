@@ -16,12 +16,12 @@ variable "availability_zones_count" {
 
 variable "app_image" {
   description = "Docker image to run in the ECS cluster"
-  default     = "225908212644.dkr.ecr.us-east-1.amazonaws.com/ndomicloud"
+  default     = "ndomi/flask-emp_app"
 }
 
 variable "app_port" {
   description = "Port exposed by the docker image to redirect traffic to"
-  default     = 80
+  default     = 5000
 }
 
 variable "app_count" {
@@ -58,4 +58,12 @@ variable "project" {
   description = "Name to be used on all the resources as identifier. e.g. Project name, Application name"
   type        = string
   default     = "ECS_project"
+}
+
+variable "ecs_domain_name" {
+  default = "ndomi.click"
+}
+
+variable "ecs_cluster_name" {
+  default = "ECS-Cluster"
 }
